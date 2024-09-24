@@ -85,7 +85,7 @@ export function allRGB(colors: string[]): boolean {
 
 /**
  * Consumes an array of numbers, and produces a string representation of the
- * numbers being added together along with their actual sum.
+ * numbers being a dded together along with their actual sum.
  *
  * For instance, the array [1, 2, 3] would become "6=1+2+3".
  * And the array [] would become "0=0".

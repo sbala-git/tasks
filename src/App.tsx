@@ -12,7 +12,7 @@ function App(): React.JSX.Element {
             <h1>Task 3</h1>
             <img src=".../src/dog.jpg" alt="A picture of a dog" />
             <ul>
-                <li>Rain</li>
+                <li>Rain!</li>
                 <li>Snow</li>
                 <li>Hail</li>
             </ul>
