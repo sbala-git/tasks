@@ -1,5 +1,4 @@
 import { Question, QuestionType } from "./interfaces/question";
-
 /**
  * Create a new blank question with the given `id`, `name`, and `type. The `body` and
  * `expected` should be empty strings, the `options` should be an empty list, the `points`
@@ -8,20 +7,31 @@ import { Question, QuestionType } from "./interfaces/question";
 export function makeBlankQuestion(
     id: number,
     name: string,
-    type: QuestionType
+    type: QuestionType,
 ): Question {
-    return {};
+    return {
+        id,
+        name,
+        type,
+        body: "",
+        expected: "",
+        options: [],
+        points: 1,
+        published: false,
+    };
 }
 
 /**
- * Consumes a question and a potential `answer`, and returns whether or not
+ * Consume s a question and a potential `answer`, and returns whether or not
  * the `answer` is correct. You should check that the `answer` is equal to
- * the `expected`, ignoring capitalization and trimming any whitespace.
+ * the `expect ed`, ignoring capitalization and trimming any whitespace.
  *
  * HINT: Look up the `trim` and `toLowerCase` functions.
  */
 export function isCorrect(question: Question, answer: string): boolean {
-    return false;
+    return (
+        answer.trim().toLowerCase() === question.expected.trim().toLowerCase()
+    );
 }
 
 /**
@@ -31,6 +41,13 @@ export function isCorrect(question: Question, answer: string): boolean {
  * be exactly one of the options.
  */
 export function isValid(question: Question, answer: string): boolean {
+    if (question.type === "short_answer_question") {
+        return true;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    else if (question.type === "multiple_choice_question" && Option) {
+        return question.options.includes(answer);
+    }
     return false;
 }
 
@@ -41,7 +58,11 @@ export function isValid(question: Question, answer: string): boolean {
  * name "My First Question" would become "9: My First Q".
  */
 export function toShortForm(question: Question): string {
-    return "";
+    //Got help from Chat GPT for this function.
+    const id = question.id;
+    const name = question.name;
+    const shortName = name.substring(0, 10);
+    return `${id}: ${shortName}`;
 }
 
 /**
@@ -62,7 +83,14 @@ export function toShortForm(question: Question): string {
  * Check the unit tests for more examples of what this looks like!
  */
 export function toMarkdown(question: Question): string {
-    return "";
+    let markdown = `# ${question.name}\n${question.body}`;
+
+    if (question.type === "multiple_choice_question") {
+        markdown +=
+            "\n" + question.options.map((option) => `- ${option}`).join("\n");
+    }
+
+    return markdown;
 }
 
 /**
@@ -70,7 +98,7 @@ export function toMarkdown(question: Question): string {
  * `newName`.
  */
 export function renameQuestion(question: Question, newName: string): Question {
-    return question;
+    return { ...question, name: newName };
 }
 
 /**
@@ -79,7 +107,7 @@ export function renameQuestion(question: Question, newName: string): Question {
  * published; if it was published, now it should be not published.
  */
 export function publishQuestion(question: Question): Question {
-    return question;
+    return { ...question, published: !question.published };
 }
 
 /**
@@ -89,7 +117,12 @@ export function publishQuestion(question: Question): Question {
  * The `published` field should be reset to false.
  */
 export function duplicateQuestion(id: number, oldQuestion: Question): Question {
-    return oldQuestion;
+    return {
+        ...oldQuestion,
+        id,
+        name: `Copy of ${oldQuestion.name}`,
+        published: false,
+    };
 }
 
 /**
@@ -100,7 +133,7 @@ export function duplicateQuestion(id: number, oldQuestion: Question): Question {
  * Check out the subsection about "Nested Fields" for more information.
  */
 export function addOption(question: Question, newOption: string): Question {
-    return question;
+    return { ...question, options: [...question.options, newOption] };
 }
 
 /**
@@ -115,7 +148,7 @@ export function mergeQuestion(
     id: number,
     name: string,
     contentQuestion: Question,
-    { points }: { points: number }
+    { points }: { points: number },
 ): Question {
-    return contentQuestion;
+    return { ...contentQuestion, id, name, points, published: false };
 }
